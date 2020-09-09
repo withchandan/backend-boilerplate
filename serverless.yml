@@ -1,0 +1,124 @@
+service:
+  name: boilerplate #TODO update service
+
+# =========================================================================================
+# Functions - Add function modules here
+# =========================================================================================
+functions:
+  - ${file(src/api.yml)}
+
+custom:
+  runtime: nodejs12.x
+  region: ap-south-1
+  memorySize: 256
+  timeout: 10
+  stage: dev
+
+  serverless-offline:
+    httpPort: 9090
+    apiKey: my-api-key
+    noPrependStageInUrl: true
+
+  dynamodb:
+    stages:
+      - dev
+    start:
+      port: 9000
+      inMemory: false
+      region: ${self:custom.region}
+      migrate: true
+
+  serverless-offline-sqs:
+    autoCreate: true # create queue if not exists
+    apiVersion: "2012-11-05"
+    endpoint: http://0.0.0.0:9324
+    region: ${self:custom.region}
+    accessKeyId: root
+    secretAccessKey: root
+
+  s3:
+    bucketName: ${self:service} #TODO update bucket name
+    host: localhost
+    port: 9010
+    directory: ./.s3
+    cors: false
+    accessKeyId: S3RVER
+    secretAccessKey: S3RVER
+
+  apigwBinary:
+    types:
+      - "image/*"
+      - "text/html"
+      - "multipart/form-data"
+      - "application/octet-stream"
+
+provider:
+  name: aws
+  region: ${self:custom.region}
+  stage: ${opt:stage, self:custom.stage}
+  runtime: ${self:custom.runtime}
+  memorySize: ${self:custom.memorySize}
+  timeout: ${self:custom.timeout}
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-plugin-optimize
+  - serverless-dynamodb-local
+  - serverless-apigw-binary
+  - serverless-offline-sqs
+  - serverless-s3-local
+  - serverless-offline
+
+package:
+  individually: true
+
+resources:
+  Resources:
+    # --------------------------------------------------------------------------------
+    # Dynamodb Table
+    # --------------------------------------------------------------------------------
+    DevDynamoDBTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:service}
+        AttributeDefinitions:
+          - AttributeName: pk
+            AttributeType: S
+          - AttributeName: sk
+            AttributeType: S
+        KeySchema:
+          - AttributeName: pk
+            KeyType: HASH
+          - AttributeName: sk
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+
+    # --------------------------------------------------------------------------------
+    # S3 buckets
+    # --------------------------------------------------------------------------------
+    DevS3Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:service} #TODO update bucket name
+        AccessControl: PublicRead
+        CorsConfiguration:
+          CorsRules:
+            - AllowedMethods:
+                - GET
+                - PUT
+                - POST
+                - HEAD
+            - AllowedOrigins:
+                - "*"
+            - AllowedHeaders:
+                - "*"
+
+    # --------------------------------------------------------------------------------
+    # SQS Queue
+    # --------------------------------------------------------------------------------
+    DevSQS:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:service} #TODO update sqs name
