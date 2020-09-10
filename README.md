@@ -1,13 +1,20 @@
 # Backend-Bolierplate
 
-
 ## Description
 
-[Boilerplate](https://github.com) backend-boilerplate repository.
+[Boilerplate](https://github.com/withchandan/backend-boilerplate) backend-boilerplate repository.
+
+## Prerequisites
+
+- NodeJs v10 or above
+- JVM or JDK v9 or above (for local dynamodb)
+- Docker (for local sqs)
+- Git
 
 ## Installation
 
 ```bash
+# install dependencies
 $ npm install
 ```
 
