@@ -1,3 +1,5 @@
+import 'dotenv/config'
+
 import {
   INestApplication,
   NestApplicationOptions,
@@ -15,7 +17,11 @@ export async function createApp(): Promise<INestApplication> {
   const expressServer = express()
   const httpAdapter = new ExpressAdapter(expressServer)
 
-  const options: NestApplicationOptions = { logger: true, cors: true }
+  const options: NestApplicationOptions = {
+    logger: ['error', 'debug'],
+    cors: true,
+  }
+
   const app: INestApplication = await NestFactory.create(
     AppModule,
     httpAdapter,
