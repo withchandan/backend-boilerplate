@@ -58,10 +58,14 @@ custom:
     stages:
       - local
     start:
+      noStart: false
       port: 9000
-      inMemory: false
+      inMemory: true
+      heapInitial: 200m
+      heapMax: 1g
       region: ${self:provider.region}
       migrate: true
+      seed: false
 
   serverless-offline-sqs:
     autoCreate: true # create queue if not exists
@@ -94,7 +98,7 @@ provider:
   runtime: ${self:custom.defaults.runtime}
   stage: ${opt:stage, self:custom.defaults.stage}
   memorySize: ${self:custom.${self:provider.stage}.memorySize}
-  timeout: ${self:custom.timeout}
+  timeout: ${self:custom.${self:provider.stage}.timeout}
   apiGateway:
     minimumCompressionSize: 0
     shouldStartNameWithService: true
