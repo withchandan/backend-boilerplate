@@ -9,8 +9,8 @@ functions:
 
 custom:
   defaults:
-    stage: local
-    region: ap-south-1
+    stage: development
+    region: us-east-1
     runtime: nodejs12.x
     memorySize: 256
     timeout: 10
@@ -60,14 +60,14 @@ custom:
     start:
       port: 9000
       inMemory: false
-      region: ${self:custom.region}
+      region: ${self:provider.region}
       migrate: true
 
   serverless-offline-sqs:
     autoCreate: true # create queue if not exists
     apiVersion: "2012-11-05"
     endpoint: http://0.0.0.0:9324
-    region: ${self:custom.region}
+    region: ${self:custom.defaults.region}
     accessKeyId: root
     secretAccessKey: root
     skipCacheInvalidation: false
@@ -90,11 +90,18 @@ custom:
 
 provider:
   name: aws
-  region: ${self:custom.region}
-  stage: ${opt:stage, self:custom.stage}
-  runtime: ${self:custom.runtime}
-  memorySize: ${self:custom.memorySize}
+  region: ${opt:region, self:custom.defaults.region}
+  runtime: ${self:custom.defaults.runtime}
+  stage: ${opt:stage, self:custom.defaults.stage}
+  memorySize: ${self:custom.${self:provider.stage}.memorySize}
   timeout: ${self:custom.timeout}
+  apiGateway:
+    minimumCompressionSize: 0
+    shouldStartNameWithService: true
+  deploymentBucket:
+    name: deploys
+    serverSideEncryption: AES256
+  deploymentPrefix: serverless
   iamRoleStatements:
     - Effect: Allow
       Action:
