@@ -1,0 +1,46 @@
+version: 0.2
+
+env:
+ variables:
+  BUILD_DIR: "dist"
+  S3_BUCKET: "example.com"
+ parameter-store:
+  AWS_ACCESS_KEY_ID: "/codebuild/key-id"
+  AWS_SECRET_ACCESS_KEY: "/codebuild/key-secret"
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 12
+    commands:
+      - echo Installation started on `date`
+      # To install dev dependencies even when NODE_ENV is set to production
+      - npm config set production false
+      - npm install -g serverless
+      - npm install -g aws-sdk
+      - npm ci
+      - node -v
+      - npm -v
+      - sls -v
+      - aws --version
+  pre_build:
+    commands:
+      - echo Lint & Test started on `date`
+      - npm run lint
+      - npm run test
+  build:
+    commands:
+      - echo Build started on `date`
+      # Set NODE_ENV to production for prod build
+      - npm config set production true
+      - npm run build
+  post_build:
+    commands:
+      - echo Deployment started on `date`
+      - npm run deploy
+
+artifacts:
+  name: artifact-name
+  files:
+    - '**/*'
+  base-directory: 'dist'
