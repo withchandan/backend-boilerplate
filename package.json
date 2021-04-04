@@ -20,7 +20,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "docs:swagger": "npm run build && NODE_ENV=local node dist/src/main.docs"
+    "docs:swagger": "npm run build && NODE_ENV=local node dist/src/main.docs",
+    "deploy": "sls deploy --stage $APP_DEPLOYMENT_STAGE --region $AWS_REGION"
   },
   "dependencies": {
     "@nestjs/common": "^7.6.15",
