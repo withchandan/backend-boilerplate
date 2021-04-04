@@ -10,7 +10,7 @@ phases:
     runtime-versions:
       nodejs: 12
     commands:
-      - echo Installation started on $(date '+%d-%m-%Y %H:%M:%S')
+      - echo "Installation started on $(date '+%d-%m-%Y %H:%M:%S')"
       # To install dev dependencies even when NODE_ENV is set to production
       - npm config set production false
       - npm install -g serverless
@@ -22,18 +22,18 @@ phases:
       - aws --version
   pre_build:
     commands:
-      - echo Lint and Test started on $(date '+%d-%m-%Y %H:%M:%S')
+      - echo "Lint and Test started on $(date '+%d-%m-%Y %H:%M:%S')"
       - npm run lint
       - npm run test
   build:
     commands:
-      - echo Build started on $(date '+%d-%m-%Y %H:%M:%S')
+      - echo "Build started on $(date '+%d-%m-%Y %H:%M:%S')"
       # Set NODE_ENV to production for prod build
       - npm config set production true
       - npm run build
   post_build:
     commands:
-      - echo Deployment started on $(date '+%d-%m-%Y %H:%M:%S')
+      - echo "Deployment started on $(date '+%d-%m-%Y %H:%M:%S')"
       - npm run deploy
 
 artifacts:
