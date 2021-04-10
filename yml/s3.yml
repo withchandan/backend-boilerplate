@@ -1,0 +1,6 @@
+Resources:
+  DevS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: ${self:custom.defaults.bucketPrefix}.${self:service} #TODO update bucket name
+      

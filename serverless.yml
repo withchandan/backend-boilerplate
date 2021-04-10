@@ -9,11 +9,25 @@ functions:
 
 custom:
   defaults:
-    stage: development
+    stage: local
     region: us-east-1
     runtime: nodejs12.x
     memorySize: 256
     timeout: 10
+    bucketPrefix: post.publisher
+
+  stages:
+    - local
+    - development
+    - staging
+    - production
+
+  apigwBinary:
+    types:
+      - "image/*"
+      - "text/html"
+      - "multipart/form-data"
+      - "application/octet-stream"
 
 # Local Stage Config
   local:
@@ -43,12 +57,6 @@ custom:
     memorySize: 512
     logRetentionInDays: 90
 
-  stages:
-    - local
-    - development
-    - staging
-    - production
-
   serverless-offline:
     httpPort: 9090
     apiKey: my-api-key
@@ -76,41 +84,49 @@ custom:
     secretAccessKey: root
     skipCacheInvalidation: false
 
+  serverless-offline-sns:
+    port: 4002 # a free port for the sns server to run on
+    debug: false
+    # host: 0.0.0.0 # Optional, defaults to 127.0.0.1 if not provided to serverless-offline
+    # sns-endpoint: http://127.0.0.1:4567 # Optional. Only if you want to use a custom endpoint
+    # accountId: 123456789012 # Optional
+
   s3:
-    bucketName: ${self:service} #TODO update bucket name
+    bucketName: ${self:custom.defaults.bucketPrefix}.${self:service} #TODO update bucket name
     host: localhost
     port: 9010
     directory: ./.s3
     cors: false
     accessKeyId: S3RVER
     secretAccessKey: S3RVER
-
-  apigwBinary:
-    types:
-      - "image/*"
-      - "text/html"
-      - "multipart/form-data"
-      - "application/octet-stream"
+  
+  prune:
+    automatic: true
+    includeLayers: true
+    number: 3
 
 provider:
   name: aws
-  region: ${opt:region, self:custom.defaults.region}
+  region: ${self:custom.defaults.region}
   runtime: ${self:custom.defaults.runtime}
+  # To push code from local system add profile
+  # profile: serverless-backend
   stage: ${opt:stage, self:custom.defaults.stage}
   memorySize: ${self:custom.${self:provider.stage}.memorySize}
   timeout: ${self:custom.${self:provider.stage}.timeout}
-  apiGateway:
-    minimumCompressionSize: 0
+  apiGateway: 
     shouldStartNameWithService: true
+    minimumCompressionSize: 1024
+  lambdaHashingVersion: 20201221
   deploymentBucket:
-    name: deploys
+    name: deploys.${self:custom.defaults.bucketPrefix}.${self:service}
     serverSideEncryption: AES256
-  deploymentPrefix: serverless
   iamRoleStatements:
     - Effect: Allow
       Action:
         - s3:*
-      Resource: arn:aws:s3:::${self:custom.s3.bucketName}
+        - sqs:*
+      Resource: '*'
   environment:
     NODE_ENV: ${self:provider.stage}
     LOG_LEVEL: ${self:custom.${self:provider.stage}.logLevel}
@@ -122,58 +138,16 @@ plugins:
   - serverless-apigw-binary
   - serverless-offline-sqs
   - serverless-s3-local
+  - serverless-pseudo-parameters
+  - serverless-stage-manager
+  - serverless-deployment-bucket
+  - serverless-offline-sns
+  - serverless-prune-plugin
   - serverless-offline
 
 package:
   individually: true
 
-resources:
-  Resources:
-    # --------------------------------------------------------------------------------
-    # Dynamodb Table
-    # --------------------------------------------------------------------------------
-    DevDynamoDBTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: ${self:service}
-        AttributeDefinitions:
-          - AttributeName: pk
-            AttributeType: S
-          - AttributeName: sk
-            AttributeType: S
-        KeySchema:
-          - AttributeName: pk
-            KeyType: HASH
-          - AttributeName: sk
-            KeyType: RANGE
-        ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
-
-    # --------------------------------------------------------------------------------
-    # S3 buckets
-    # --------------------------------------------------------------------------------
-    DevS3Bucket:
-      Type: AWS::S3::Bucket
-      Properties:
-        BucketName: ${self:service} #TODO update bucket name
-        AccessControl: PublicRead
-        CorsConfiguration:
-          CorsRules:
-            - AllowedMethods:
-                - GET
-                - PUT
-                - POST
-                - HEAD
-            - AllowedOrigins:
-                - "*"
-            - AllowedHeaders:
-                - "*"
-
-    # --------------------------------------------------------------------------------
-    # SQS Queue
-    # --------------------------------------------------------------------------------
-    DevSQS:
-      Type: AWS::SQS::Queue
-      Properties:
-        QueueName: ${self:service} #TODO update sqs name
+resources: 
+  - ${file(yml/sqs.yml)}
+  - ${file(yml/s3.yml)}

@@ -1,0 +1,5 @@
+Resources:
+  DevSQS:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: ${self:service} #TODO update sqs name

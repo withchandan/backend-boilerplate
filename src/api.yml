@@ -4,10 +4,8 @@ main:
     - http:
         path: /
         method: any
-        private: true
         cors: true
     - http:
         path: /{proxy+}
         method: any
-        private: true
         cors: true
