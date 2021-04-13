@@ -1,18 +1,23 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { SesService } from './ses.service';
+import { Test, TestingModule } from '@nestjs/testing'
+import { SesService } from './ses.service'
+
+import { ConfigService } from '../config.service'
 
 describe('SesService', () => {
-  let service: SesService;
+  let service: SesService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [SesService],
-    }).compile();
+      providers: [
+        SesService,
+        { provide: ConfigService, useValue: { get: jest.fn() } },
+      ],
+    }).compile()
 
-    service = module.get<SesService>(SesService);
-  });
+    service = module.get<SesService>(SesService)
+  })
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
-});
+    expect(service).toBeDefined()
+  })
+})

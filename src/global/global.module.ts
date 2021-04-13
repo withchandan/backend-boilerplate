@@ -24,5 +24,6 @@ import { HttpErrorFilter } from './http-error.filter'
       useClass: HttpErrorFilter,
     },
   ],
+  exports: [DynamodbService, SqsService, S3Service, SesService, ConfigService],
 })
 export class GlobalModule {}

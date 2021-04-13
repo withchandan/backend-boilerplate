@@ -4,11 +4,12 @@ import { ApiTags } from '@nestjs/swagger'
 import { ApiCombineDecorators } from '../shared'
 
 @ApiTags('Health')
-@Controller('')
+@Controller()
 export class HealthController {
   @ApiCombineDecorators({
     apiSummary: 'Get application name and version',
-    apiDescription: 'fasfasfasdfasdf',
+    apiDescription:
+      'The purpose of this api is just to check if the system us up or down',
     successStatus: HttpStatus.OK,
     successDescription: 'Return  application name and version',
   })

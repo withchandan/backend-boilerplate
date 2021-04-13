@@ -70,7 +70,6 @@
     "serverless-plugin-optimize": "4.2.1-rc.1",
     "serverless-plugin-typescript": "^1.1.9",
     "serverless-prune-plugin": "^1.5.0",
-    "serverless-pseudo-parameters": "^2.5.0",
     "serverless-s3-local": "^0.6.14",
     "serverless-stage-manager": "^1.0.5",
     "serverless-webpack": "^5.4.1",
