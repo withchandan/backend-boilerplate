@@ -45,14 +45,24 @@ import {
   SendBulkEmailResInterface,
 } from './interface'
 
+import { ConfigService } from '../config.service'
+
 @Injectable()
 export class SesService {
   private readonly client: SESV2
 
   private readonly sesv2Config: ClientConfiguration
 
-  constructor() {
-    this.sesv2Config = { region: '' }
+  constructor(private readonly config: ConfigService) {
+    this.sesv2Config = {
+      region: this.config.get('awsRegion'),
+      apiVersion: '2019-09-27',
+      credentials: {
+        accessKeyId: this.config.get('awsAccessKey'),
+        secretAccessKey: this.config.get('awsAccessSecret'),
+      },
+    }
+
     this.client = new SESV2(this.sesv2Config)
   }
 

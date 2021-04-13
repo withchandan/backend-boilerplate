@@ -130,6 +130,10 @@ provider:
   environment:
     NODE_ENV: ${self:provider.stage}
     LOG_LEVEL: ${self:custom.${self:provider.stage}.logLevel}
+    AWS_REGION: ${self:provider.region}
+    AWS_ACCOUNT_ID: #{AWS::AccountId}
+    AWS_ACCESS_KEY: ${env:AWS_ACCESS_KEY}
+    AWS_ACCESS_SECRET: ${env:AWS_ACCESS_SECRET}
 
 plugins:
   - serverless-plugin-typescript
@@ -138,7 +142,6 @@ plugins:
   - serverless-apigw-binary
   - serverless-offline-sqs
   - serverless-s3-local
-  - serverless-pseudo-parameters
   - serverless-stage-manager
   - serverless-deployment-bucket
   - serverless-offline-sns

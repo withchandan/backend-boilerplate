@@ -18,7 +18,7 @@ export async function createApp(): Promise<INestApplication> {
   const httpAdapter = new ExpressAdapter(expressServer)
 
   const options: NestApplicationOptions = {
-    logger: ['error', 'debug'],
+    logger: ['error', 'debug', 'log'],
     cors: true,
   }
 
