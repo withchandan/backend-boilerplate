@@ -28,7 +28,6 @@ phases:
   build:
     commands:
       - echo "Build started on $(date '+%d-%m-%Y %H:%M:%S')"
-      # Set NODE_ENV to production for prod build
       - npm config set production true
       - npm run build
   post_build:
