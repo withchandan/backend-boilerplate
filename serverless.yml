@@ -132,8 +132,6 @@ provider:
     LOG_LEVEL: ${self:custom.${self:provider.stage}.logLevel}
     AWS_REGION: ${self:provider.region}
     AWS_ACCOUNT_ID: #{AWS::AccountId}
-    AWS_ACCESS_KEY: ${env:AWS_ACCESS_KEY}
-    AWS_ACCESS_SECRET: ${env:AWS_ACCESS_SECRET}
 
 plugins:
   - serverless-plugin-typescript
