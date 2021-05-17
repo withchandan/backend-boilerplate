@@ -1,2 +1,2 @@
-export * from './ses.interface'
-export * from './sqs.interface'
+export * from './ses.interface';
+export * from './sqs.interface';

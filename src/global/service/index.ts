@@ -1,2 +1,2 @@
-export * from './aws'
-export * from './config.service'
+export * from './aws';
+export * from './config.service';

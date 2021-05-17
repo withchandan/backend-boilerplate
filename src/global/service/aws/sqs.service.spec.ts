@@ -1,10 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing'
-import { SqsService } from './sqs.service'
+import { Test, TestingModule } from '@nestjs/testing';
+import { SqsService } from './sqs.service';
 
-import { ConfigService } from '../config.service'
+import { ConfigService } from '../config.service';
 
 describe('SqsService', () => {
-  let service: SqsService
+  let service: SqsService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -12,12 +12,12 @@ describe('SqsService', () => {
         SqsService,
         { provide: ConfigService, useValue: { get: jest.fn() } },
       ],
-    }).compile()
+    }).compile();
 
-    service = module.get<SqsService>(SqsService)
-  })
+    service = module.get<SqsService>(SqsService);
+  });
 
   it('should be defined', () => {
-    expect(service).toBeDefined()
-  })
-})
+    expect(service).toBeDefined();
+  });
+});
