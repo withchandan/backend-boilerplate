@@ -1,18 +1,18 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common';
 
-type Environment = 'development' | 'staging' | 'production'
+type Environment = 'development' | 'staging' | 'production';
 
 interface EnvConfigInterface {
-  awsRegion: string
-  awsAccessKey: string
-  awsAccessSecret: string
-  awsAccountId: string
-  environment: Environment
+  awsRegion: string;
+  awsAccessKey: string;
+  awsAccessSecret: string;
+  awsAccountId: string;
+  environment: Environment;
 }
 
 @Injectable()
 export class ConfigService {
-  private readonly envConfig: EnvConfigInterface
+  private readonly envConfig: EnvConfigInterface;
 
   constructor() {
     this.envConfig = {
@@ -21,10 +21,10 @@ export class ConfigService {
       awsAccessSecret: process.env.AWS_ACCESS_SECRET as string,
       awsAccountId: process.env.AWS_ACCOUNT_ID as string,
       environment: process.env.NODE_ENV as Environment,
-    }
+    };
   }
 
   public get(key: keyof EnvConfigInterface): string {
-    return this.envConfig[key]
+    return this.envConfig[key];
   }
 }

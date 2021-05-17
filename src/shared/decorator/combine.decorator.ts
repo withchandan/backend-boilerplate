@@ -1,4 +1,4 @@
-import { applyDecorators, HttpStatus, Type } from '@nestjs/common'
+import { applyDecorators, HttpStatus, Type } from '@nestjs/common';
 import {
   ApiSecurity,
   ApiBearerAuth,
@@ -9,18 +9,19 @@ import {
   ApiBadRequestResponse,
   ApiUnauthorizedResponse,
   ApiInternalServerErrorResponse,
-} from '@nestjs/swagger'
+} from '@nestjs/swagger';
 
 export interface CombineDecoratorOptions {
-  apiSummary: string
-  apiDescription?: string
-  successDescription: string
-  successStatus: HttpStatus
-  hasUnauthorized?: boolean
-  hasForbidden?: boolean
-  hasBadRequest?: boolean
-  hasNotFound?: boolean
-  successType?: Type<unknown> | Function | [Function] | string
+  apiSummary: string;
+  apiDescription?: string;
+  successDescription: string;
+  successStatus: HttpStatus;
+  hasUnauthorized?: boolean;
+  hasForbidden?: boolean;
+  hasBadRequest?: boolean;
+  hasNotFound?: boolean;
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  successType?: Type<unknown> | Function | [Function] | string;
 }
 
 export const ApiCombineDecorators = (
@@ -32,7 +33,7 @@ export const ApiCombineDecorators = (
     successStatus,
     successDescription,
     successType,
-  } = options
+  } = options;
 
   const array = [
     ApiOperation({ summary: apiSummary, description: apiDescription }),
@@ -42,29 +43,29 @@ export const ApiCombineDecorators = (
       type: successType,
     }),
     ApiInternalServerErrorResponse({ description: 'Internal server error' }),
-  ]
+  ];
 
   if (options.hasUnauthorized) {
     array.push(
       ApiBearerAuth(),
       ApiUnauthorizedResponse({ description: 'Unauthorized' }),
-    )
+    );
   }
 
   if (options.hasForbidden) {
     array.push(
       ApiSecurity('x-api-key'),
       ApiForbiddenResponse({ description: 'Forbidden' }),
-    )
+    );
   }
 
   if (options.hasBadRequest) {
-    array.push(ApiBadRequestResponse({ description: 'Bad request' }))
+    array.push(ApiBadRequestResponse({ description: 'Bad request' }));
   }
 
   if (options.hasNotFound) {
-    array.push(ApiNotFoundResponse({ description: 'Not Found' }))
+    array.push(ApiNotFoundResponse({ description: 'Not Found' }));
   }
 
-  return applyDecorators(...array)
-}
+  return applyDecorators(...array);
+};

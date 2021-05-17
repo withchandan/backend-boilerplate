@@ -1,5 +1,5 @@
-import { Module, Global } from '@nestjs/common'
-import { APP_FILTER } from '@nestjs/core'
+import { Module, Global } from '@nestjs/common';
+import { APP_FILTER } from '@nestjs/core';
 
 import {
   DynamodbService,
@@ -7,9 +7,9 @@ import {
   S3Service,
   SesService,
   ConfigService,
-} from './service'
+} from './service';
 
-import { HttpErrorFilter } from './http-error.filter'
+import { HttpErrorFilter } from './http-error.filter';
 
 @Global()
 @Module({

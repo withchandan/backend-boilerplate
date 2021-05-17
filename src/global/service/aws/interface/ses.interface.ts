@@ -1,116 +1,121 @@
-import { DateInterface } from '../../../../shared'
+import { DateInterface } from '../../../../shared';
 
-import { BulkEmailStatus, SubscriptionStatus } from 'aws-sdk/clients/sesv2'
+import { BulkEmailStatus, SubscriptionStatus } from 'aws-sdk/clients/sesv2';
 
 export interface TopicPreferenceInterface {
-  topicName: string
-  subscriptionStatus: SubscriptionStatus
+  topicName: string;
+  subscriptionStatus: SubscriptionStatus;
 }
 
 export interface CreateContanctReqInterface {
-  contactListName: string
-  emailAddress: string
-  topicPreferences?: TopicPreferenceInterface[]
-  unsubscribeAll?: boolean
-  attributesData?: string
+  contactListName: string;
+  emailAddress: string;
+  topicPreferences?: TopicPreferenceInterface[];
+  unsubscribeAll?: boolean;
+  attributesData?: string;
 }
 
-export interface ReadContactReqInterface
-  extends Pick<
-    CreateContanctReqInterface,
-    'contactListName' | 'emailAddress'
-  > {}
+export type ReadContactReqInterface = Pick<
+  CreateContanctReqInterface,
+  'contactListName' | 'emailAddress'
+>;
 
 export interface ReadContactResInterface
   extends CreateContanctReqInterface,
     DateInterface {}
 
-export interface UpdateContactReqInterface extends CreateContanctReqInterface {}
+export type UpdateContactReqInterface = CreateContanctReqInterface;
 
-export interface DeleteContactReqInterface
-  extends Pick<
-    CreateContanctReqInterface,
-    'contactListName' | 'emailAddress'
-  > {}
+export type DeleteContactReqInterface = Pick<
+  CreateContanctReqInterface,
+  'contactListName' | 'emailAddress'
+>;
 
 export interface TopicInterface {
-  topicName: string
-  displayName: string
-  description?: string
-  defaultSubscriptionStatus: SubscriptionStatus
+  topicName: string;
+  displayName: string;
+  description?: string;
+  defaultSubscriptionStatus: SubscriptionStatus;
 }
 
 export interface TagInterface {
-  key: string
-  value: string
+  key: string;
+  value: string;
 }
 
 export interface CreateContactListReqInterface {
-  contactListName: string
-  topics?: TopicInterface[]
-  description?: string
-  tags?: TagInterface[]
+  contactListName: string;
+  topics?: TopicInterface[];
+  description?: string;
+  tags?: TagInterface[];
 }
 
-export interface ReadContactListReqInterface
-  extends Pick<CreateContactListReqInterface, 'contactListName'> {}
+export type ReadContactListReqInterface = Pick<
+  CreateContactListReqInterface,
+  'contactListName'
+>;
 
 export interface ReadContactListResInterface
   extends CreateContactListReqInterface,
     DateInterface {}
 
-export interface UpdateContactListReqInterface
-  extends Pick<
-    CreateContactListReqInterface,
-    'contactListName' | 'topics' | 'description'
-  > {}
+export type UpdateContactListReqInterface = Pick<
+  CreateContactListReqInterface,
+  'contactListName' | 'topics' | 'description'
+>;
 
-export interface DeleteContactListReqInterface
-  extends Pick<CreateContactListReqInterface, 'contactListName'> {}
+export type DeleteContactListReqInterface = Pick<
+  CreateContactListReqInterface,
+  'contactListName'
+>;
 
 export interface TemplateContent {
-  html: string
-  text: string
-  subject: string
+  html: string;
+  text: string;
+  subject: string;
 }
 
 export interface CreateTemplateInterface {
-  templateName: string
-  templateContent: TemplateContent
+  templateName: string;
+  templateContent: TemplateContent;
 }
 
-export interface ReadTemplateReqInterface
-  extends Pick<CreateTemplateInterface, 'templateName'> {}
+export type ReadTemplateReqInterface = Pick<
+  CreateTemplateInterface,
+  'templateName'
+>;
 
-export interface ReadTemplateResInterface extends CreateTemplateInterface {}
+export type ReadTemplateResInterface = CreateTemplateInterface;
 
 export interface UpdateTemplateInterface
   extends Pick<CreateTemplateInterface, 'templateName'> {
   templateContent: {
-    html?: string
-    text?: string
-    subject?: string
-  }
+    html?: string;
+    text?: string;
+    subject?: string;
+  };
 }
 
-export interface DeleteTemplateReqInterface
-  extends Pick<CreateTemplateInterface, 'templateName'> {}
+export type DeleteTemplateReqInterface = Pick<
+  CreateTemplateInterface,
+  'templateName'
+>;
 
 export interface TopicFilter {
-  topicName?: string
-  useDefaultIfPreferenceUnavailable?: boolean
+  topicName?: string;
+  useDefaultIfPreferenceUnavailable?: boolean;
 }
 
 export interface ListContactsFilter {
-  filteredStatus?: SubscriptionStatus
-  topicFilter?: TopicFilter
+  filteredStatus?: SubscriptionStatus;
+  topicFilter?: TopicFilter;
 }
 
 export interface ReadListContactsReqInterface
   extends Pick<CreateContactListReqInterface, 'contactListName'> {
-  pageSize?: number
-  nextToken?: string
-  filter?: ListContactsFilter
+  pageSize?: number;
+  nextToken?: string;
+  filter?: ListContactsFilter;
 }
 
 export interface Contact
@@ -118,54 +123,54 @@ export interface Contact
     CreateContanctReqInterface,
     'contactListName' | 'attributesData'
   > {
-  topicDefaultPreferences?: TopicPreferenceInterface[]
+  topicDefaultPreferences?: TopicPreferenceInterface[];
 }
 
 export interface ReadListContactsResInterface {
-  offset?: string
-  contacts?: Contact[]
+  offset?: string;
+  contacts?: Contact[];
 }
 
 export interface ReadContactListsReqInterface {
-  pageSize?: number
-  nextToken?: string
+  pageSize?: number;
+  nextToken?: string;
 }
 
 export interface ContactListInterface {
-  contactListName: string
+  contactListName: string;
 }
 
 export interface ReadContactListsResInterface {
-  contactLists: ContactListInterface[]
-  nextToken?: string
+  contactLists: ContactListInterface[];
+  nextToken?: string;
 }
 
 export interface EmailContentInterface {
-  templateName: string
-  templateData?: Record<string, string | number>
+  templateName: string;
+  templateData?: Record<string, string | number>;
 }
 
 export interface EmailDestination {
-  to: string[]
-  cc: string[]
-  bcc: string[]
+  to: string[];
+  cc: string[];
+  bcc: string[];
 }
 
 export interface BulkEmailEntry {
-  destination: EmailDestination
-  templateData: Record<string, string | number>
+  destination: EmailDestination;
+  templateData: Record<string, string | number>;
 }
 
 export interface SendBulkEmailReqInterface {
-  configurationSetName?: string
-  fromEmailAddress?: string
-  replyToAddresses?: string[]
-  defaultContent: EmailContentInterface
-  bulkEmailEntries: BulkEmailEntry[]
+  configurationSetName?: string;
+  fromEmailAddress?: string;
+  replyToAddresses?: string[];
+  defaultContent: EmailContentInterface;
+  bulkEmailEntries: BulkEmailEntry[];
 }
 
 export interface SendBulkEmailResInterface {
-  status?: BulkEmailStatus
-  error?: string
-  messageId?: string
+  status?: BulkEmailStatus;
+  error?: string;
+  messageId?: string;
 }

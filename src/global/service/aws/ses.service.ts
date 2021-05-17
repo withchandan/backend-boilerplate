@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common';
 
-import { SESV2 } from 'aws-sdk'
+import { SESV2 } from 'aws-sdk';
 import {
   ClientConfiguration,
   SubscriptionStatus,
@@ -19,7 +19,7 @@ import {
   ListContactsRequest,
   ListContactListsRequest,
   SendBulkEmailRequest,
-} from 'aws-sdk/clients/sesv2'
+} from 'aws-sdk/clients/sesv2';
 
 import {
   CreateContanctReqInterface,
@@ -43,15 +43,15 @@ import {
   ReadContactListsResInterface,
   SendBulkEmailReqInterface,
   SendBulkEmailResInterface,
-} from './interface'
+} from './interface';
 
-import { ConfigService } from '../config.service'
+import { ConfigService } from '../config.service';
 
 @Injectable()
 export class SesService {
-  private readonly client: SESV2
+  private readonly client: SESV2;
 
-  private readonly sesv2Config: ClientConfiguration
+  private readonly sesv2Config: ClientConfiguration;
 
   constructor(private readonly config: ConfigService) {
     this.sesv2Config = {
@@ -61,9 +61,9 @@ export class SesService {
         accessKeyId: this.config.get('awsAccessKey'),
         secretAccessKey: this.config.get('awsAccessSecret'),
       },
-    }
+    };
 
-    this.client = new SESV2(this.sesv2Config)
+    this.client = new SESV2(this.sesv2Config);
   }
 
   // contact
@@ -79,9 +79,9 @@ export class SesService {
         TopicName: topicPreference.topicName,
         SubscriptionStatus: topicPreference.subscriptionStatus,
       })),
-    }
+    };
 
-    await this.client.createContact(p).promise()
+    await this.client.createContact(p).promise();
   }
 
   public async readContact(
@@ -90,9 +90,9 @@ export class SesService {
     const p: GetContactRequest = {
       ContactListName: params.contactListName,
       EmailAddress: params.emailAddress,
-    }
+    };
 
-    const contact = await this.client.getContact(p).promise()
+    const contact = await this.client.getContact(p).promise();
 
     // TODO: fix date
     return {
@@ -106,7 +106,7 @@ export class SesService {
       })),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-    }
+    };
   }
 
   public async updateContact(params: UpdateContactReqInterface): Promise<void> {
@@ -119,18 +119,18 @@ export class SesService {
         TopicName: topicPreference.topicName,
         SubscriptionStatus: topicPreference.subscriptionStatus,
       })),
-    }
+    };
 
-    await this.client.updateContact(p).promise()
+    await this.client.updateContact(p).promise();
   }
 
   public async deleteContact(params: DeleteContactReqInterface): Promise<void> {
     const p: DeleteContactRequest = {
       ContactListName: params.contactListName,
       EmailAddress: params.emailAddress,
-    }
+    };
 
-    await this.client.deleteContact(p).promise()
+    await this.client.deleteContact(p).promise();
   }
 
   // contact list
@@ -147,9 +147,9 @@ export class SesService {
       })),
       Description: params.description,
       Tags: params.tags?.map((tag) => ({ Key: tag.key, Value: tag.value })),
-    }
+    };
 
-    await this.client.createContactList(p).promise()
+    await this.client.createContactList(p).promise();
   }
 
   public async updateContactList(
@@ -164,17 +164,19 @@ export class SesService {
         DefaultSubscriptionStatus: topic.defaultSubscriptionStatus,
       })),
       Description: params.description,
-    }
+    };
 
-    await this.client.updateContactList(p).promise()
+    await this.client.updateContactList(p).promise();
   }
 
   public async readContactList(
     params: ReadContactListReqInterface,
   ): Promise<ReadContactListResInterface> {
-    const p: GetContactListRequest = { ContactListName: params.contactListName }
+    const p: GetContactListRequest = {
+      ContactListName: params.contactListName,
+    };
 
-    const contactList = await this.client.getContactList(p).promise()
+    const contactList = await this.client.getContactList(p).promise();
 
     return {
       contactListName: contactList.ContactListName as string,
@@ -182,7 +184,8 @@ export class SesService {
         topicName: topic.TopicName as string,
         displayName: topic.DisplayName as string,
         description: topic.Description,
-        defaultSubscriptionStatus: topic.DefaultSubscriptionStatus as SubscriptionStatus,
+        defaultSubscriptionStatus:
+          topic.DefaultSubscriptionStatus as SubscriptionStatus,
       })),
       description: contactList.Description,
       tags: contactList.Tags?.map((tag) => ({
@@ -191,7 +194,7 @@ export class SesService {
       })),
       createdAt: '',
       updatedAt: '',
-    }
+    };
   }
 
   public async deleteContactList(
@@ -199,9 +202,9 @@ export class SesService {
   ): Promise<void> {
     const p: DeleteContactListRequest = {
       ContactListName: params.contactListName,
-    }
+    };
 
-    await this.client.deleteContactList(p).promise()
+    await this.client.deleteContactList(p).promise();
   }
 
   // template
@@ -213,17 +216,17 @@ export class SesService {
         Text: params.templateContent.text,
         Subject: params.templateContent.subject,
       },
-    }
+    };
 
-    await this.client.createEmailTemplate(p).promise()
+    await this.client.createEmailTemplate(p).promise();
   }
 
   public async readTemplate(
     param: ReadTemplateReqInterface,
   ): Promise<ReadTemplateResInterface> {
-    const p: GetEmailTemplateRequest = { TemplateName: param.templateName }
+    const p: GetEmailTemplateRequest = { TemplateName: param.templateName };
 
-    const template = await this.client.getEmailTemplate(p).promise()
+    const template = await this.client.getEmailTemplate(p).promise();
 
     return {
       templateName: template.TemplateName,
@@ -232,7 +235,7 @@ export class SesService {
         text: template.TemplateContent.Text as string,
         subject: template.TemplateContent.Subject as string,
       },
-    }
+    };
   }
 
   public async updateTemplate(params: UpdateTemplateInterface): Promise<void> {
@@ -243,17 +246,17 @@ export class SesService {
         Text: params.templateContent.subject,
         Subject: params.templateContent.subject,
       },
-    }
+    };
 
-    await this.client.updateEmailTemplate(p).promise()
+    await this.client.updateEmailTemplate(p).promise();
   }
 
   public async deleteTemplate(
     params: DeleteTemplateReqInterface,
   ): Promise<void> {
-    const p: DeleteEmailTemplateRequest = { TemplateName: params.templateName }
+    const p: DeleteEmailTemplateRequest = { TemplateName: params.templateName };
 
-    await this.client.deleteEmailTemplate(p).promise()
+    await this.client.deleteEmailTemplate(p).promise();
   }
 
   // Lists the contacts present in a specific contact list.
@@ -272,9 +275,9 @@ export class SesService {
             params.filter?.topicFilter?.useDefaultIfPreferenceUnavailable,
         },
       },
-    }
+    };
 
-    const contacts = await this.client.listContacts(p).promise()
+    const contacts = await this.client.listContacts(p).promise();
 
     return {
       contacts: contacts.Contacts?.map((contact) => ({
@@ -291,7 +294,7 @@ export class SesService {
           }),
         ),
       })),
-    }
+    };
   }
 
   // Lists all of the contact lists available.
@@ -301,9 +304,9 @@ export class SesService {
     const p: ListContactListsRequest = {
       PageSize: params.pageSize,
       NextToken: params.nextToken,
-    }
+    };
 
-    const list = await this.client.listContactLists(p).promise()
+    const list = await this.client.listContactLists(p).promise();
 
     return {
       contactLists:
@@ -311,7 +314,7 @@ export class SesService {
           contactListName: contactList.ContactListName as string,
         })) || [],
       nextToken: list.NextToken,
-    }
+    };
   }
 
   // Composes an email message to multiple destinations.
@@ -342,14 +345,14 @@ export class SesService {
           },
         },
       })),
-    }
+    };
 
-    const res = await this.client.sendBulkEmail(p).promise()
+    const res = await this.client.sendBulkEmail(p).promise();
 
     return res.BulkEmailEntryResults.map((bulkEmailEntryResult) => ({
       status: bulkEmailEntryResult.Status,
       error: bulkEmailEntryResult.Error,
       messageId: bulkEmailEntryResult.MessageId,
-    }))
+    }));
   }
 }

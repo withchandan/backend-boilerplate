@@ -1,1 +1,1 @@
-export * from './combine.decorator'
+export * from './combine.decorator';

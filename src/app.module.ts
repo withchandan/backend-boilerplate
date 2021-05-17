@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common'
+import { Module } from '@nestjs/common';
 import { HealthModule } from './health/health.module';
 import { GlobalModule } from './global/global.module';
 import { SharedModule } from './shared/shared.module';

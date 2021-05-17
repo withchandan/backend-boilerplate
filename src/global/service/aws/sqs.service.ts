@@ -1,22 +1,22 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common';
 
-import { SQS } from 'aws-sdk'
-import { ClientConfiguration } from 'aws-sdk/clients/sqs'
+import { SQS } from 'aws-sdk';
+import { ClientConfiguration } from 'aws-sdk/clients/sqs';
 
 import {
   PushMessageBatchReqInterface,
   PushMessageReqInterface,
   PushMessageResInterface,
   PushMessageBatchResInterface,
-} from './interface'
+} from './interface';
 
-import { ConfigService } from '../config.service'
+import { ConfigService } from '../config.service';
 
 @Injectable()
 export class SqsService {
-  private readonly client: SQS
+  private readonly client: SQS;
 
-  private readonly sqsConfig: ClientConfiguration
+  private readonly sqsConfig: ClientConfiguration;
 
   constructor(private readonly config: ConfigService) {
     this.sqsConfig = {
@@ -26,25 +26,24 @@ export class SqsService {
         accessKeyId: this.config.get('awsAccessKey'),
         secretAccessKey: this.config.get('awsAccessSecret'),
       },
-    }
+    };
 
-    this.client = new SQS(this.sqsConfig)
+    this.client = new SQS(this.sqsConfig);
   }
 
   public async push(
     params: PushMessageReqInterface,
-  ): Promise<PushMessageResInterface>
+  ): Promise<PushMessageResInterface>;
   public async push(
     params: PushMessageBatchReqInterface,
-  ): Promise<PushMessageBatchResInterface>
+  ): Promise<PushMessageBatchResInterface>;
   public async push(
     params: PushMessageReqInterface | PushMessageBatchReqInterface,
   ): Promise<PushMessageResInterface | PushMessageBatchResInterface> {
     if ((params as PushMessageBatchReqInterface).entries) {
-      const {
-        Successful,
-        Failed,
-      } = await this.client.sendMessageBatch().promise()
+      const { Successful, Failed } = await this.client
+        .sendMessageBatch()
+        .promise();
 
       return {
         successful: Successful.map((success) => ({
@@ -56,11 +55,11 @@ export class SqsService {
           id: failed.Id,
           message: failed.Message,
         })),
-      }
+      };
     }
 
-    const res = await this.client.sendMessage().promise()
+    const res = await this.client.sendMessage().promise();
 
-    return { messageId: res.MessageId, mD5OfMessageBody: res.MD5OfMessageBody }
+    return { messageId: res.MessageId, mD5OfMessageBody: res.MD5OfMessageBody };
   }
 }

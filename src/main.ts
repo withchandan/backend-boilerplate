@@ -1,16 +1,16 @@
-import { createApp } from './app'
-import { Logger } from '@nestjs/common'
+import { createApp } from './app';
+import { Logger } from '@nestjs/common';
 
-async function bootstrap() {
-  const PORT = 9090
-  const app = await createApp()
+async function bootstrap(): Promise<void> {
+  const PORT = 9090;
+  const app = await createApp();
 
-  await app.init()
-  await app.listen(PORT)
+  await app.init();
+  await app.listen(PORT);
 
-  Logger.log(`Application server started on port ${PORT}`)
+  Logger.log(`Application server started on port ${PORT}`);
 }
 
-bootstrap()
+bootstrap();
 
-export { bootstrap }
+export { bootstrap };
